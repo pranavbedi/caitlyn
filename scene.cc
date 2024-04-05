@@ -18,6 +18,18 @@ unsigned int Scene::add_primitive(std::shared_ptr<Primitive> prim) {
     return primID;
 }
 
+void Scene::add_instance(std::shared_ptr<instance_object> p, RTCDevice device){
+    RTCGeometry instance = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_INSTANCE);
+    rtcSetGeometryInstancedScene(instance, rtc_scene);
+
+    rtcSetGeometryTransform(instance, 0, RTC_FORMAT_FLOAT3X4_ROW_MAJOR, p->transform);
+    rtcCommitGeometry(instance);
+    rtcAttachGeometry(rtc_scene, instance);
+    rtcReleaseGeometry(instance);
+
+    rtcCommitScene(scene);
+}
+
 void Scene::commitScene() { rtcCommitScene(rtc_scene); }
 void Scene::releaseScene() { rtcReleaseScene(rtc_scene); }
 
