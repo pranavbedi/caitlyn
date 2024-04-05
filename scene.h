@@ -37,7 +37,7 @@ class Scene {
     void commitScene();
     void releaseScene();
     unsigned int add_primitive(std::shared_ptr<Primitive> prim);
-    void add_instance(std::shared_ptr<instance_object> p);
+    void add_instance(std::shared_ptr<instance_object> p, RTCDevice device);
 };
 
 void add_sphere(RTCDevice device, RTCScene scene);

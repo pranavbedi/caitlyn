@@ -27,7 +27,7 @@ void Scene::add_instance(std::shared_ptr<instance_object> p, RTCDevice device){
     rtcAttachGeometry(rtc_scene, instance);
     rtcReleaseGeometry(instance);
 
-    rtcCommitScene(scene);
+    rtcCommitScene(rtc_scene);
 }
 
 void Scene::commitScene() { rtcCommitScene(rtc_scene); }

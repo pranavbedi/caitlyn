@@ -3,12 +3,10 @@
 
 class instance_object : public Geometry {
   public:
-  // Takes in the geom object p, the transform matrix pointer, length for the length of transform to access elements
-    instance(shared_ptr<Geometry> p, float *transform, int length)
-      : object(p), transform{transform}, length{length}
 
-  private:
+  instance_object(std::shared_ptr<Geometry> p, float* transform)
+    : Geometry(vec3(p->position)), object(p), transform(transform) {}
+
     shared_ptr<Geometry> object;
     float *transform;
-    int length;
 };
