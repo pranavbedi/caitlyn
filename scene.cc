@@ -18,16 +18,25 @@ unsigned int Scene::add_primitive(std::shared_ptr<Primitive> prim) {
     return primID;
 }
 
-void Scene::add_instance(std::shared_ptr<instance_object> p, RTCDevice device){
-    RTCGeometry instance = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_INSTANCE);
-    rtcSetGeometryInstancedScene(instance, rtc_scene);
+unsigned int Scene::add_instance(std::shared_ptr<Primitive> sprim, RTCDevice device, float* transform) {
+    RTCScene instance_scene = rtcNewScene(device);
+    unsigned int geomID = rtcAttachGeometry(instance_scene, sprim->geom);
+    rtcReleaseGeometry(sprim->geom);
+    rtcCommitScene(instance_scene);
 
-    rtcSetGeometryTransform(instance, 0, RTC_FORMAT_FLOAT3X4_ROW_MAJOR, p->transform);
-    rtcCommitGeometry(instance);
-    rtcAttachGeometry(rtc_scene, instance);
-    rtcReleaseGeometry(instance);
+    RTCGeometry instance_geom = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_INSTANCE);
+    rtcSetGeometryInstancedScene(instance_geom, instance_scene);
+    rtcSetGeometryTransform(instance_geom, 0, RTC_FORMAT_FLOAT3X4_ROW_MAJOR, transform);
+    rtcCommitGeometry(instance_geom);
 
-    rtcCommitScene(rtc_scene);
+    unsigned int primID = rtcAttachGeometry(rtc_scene, instance_geom);
+    rtcReleaseGeometry(instance_geom);
+
+    vec3 translate = vec3(transform[3], transform[7], transform[11]);
+    auto inst_prim = make_shared<SpherePrimitive>(sprim->position + translate, sprim->mat_ptr, 1, device);
+
+    geom_map[primID] = inst_prim;
+    return primID;
 }
 
 void Scene::commitScene() { rtcCommitScene(rtc_scene); }
