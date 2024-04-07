@@ -770,25 +770,18 @@ void instances() {
     auto sphere1 = make_shared<SpherePrimitive>(point3(0,0,3), red, 1, device);
     scene_ptr->add_primitive(sphere1);
 
-    // OPTION A: Create another sphere
-    // auto sphere2 = make_shared<SpherePrimitive>(point3(0,0,-3), red, 1, device);
-    // scene_ptr->add_primitive(sphere2);
-
-    // OPTION B: Create an INSTANCE of the original sphere
+    // Create an INSTANCE of the original sphere
     float transform[12] = {
         1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 1, -6
     }; // results in the isntance being at (0,0,-3)
-    scene_ptr->add_instance(sphere1, device, transform);
+    auto sphere_instance = make_shared<SpherePrimitiveInstance>(sphere1, transform, device);
+    scene_ptr->add_primitive_instance(sphere_instance, device);
 
     scene_ptr->commitScene();
     rtcReleaseDevice(device);
     output(render_data, cam, scene_ptr);
-
-    // Fire test ray at the rightmost sphere
-    ray test_ray = ray(point3(10, 0, 0), (vec3(0, 0, -3) - vec3(10, 0, 0)).unit_vector(), 0.0);
-    std::cout << colorize_ray(test_ray, scene_ptr, 5) << std::endl;
 }
 
 int main() {
