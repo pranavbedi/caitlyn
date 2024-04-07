@@ -106,31 +106,34 @@ color colorize_ray(const ray& r, std::shared_ptr<Scene> scene, int depth) {
 
     rtcIntersect1(scene->rtc_scene, &rayhit);
 
-    // if hit is found
-    if (rayhit.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
-        ray scattered;
-        color attenuation;
+    int map_key;
+    if (rayhit.hit.instID[0] != RTC_INVALID_GEOMETRY_ID) { // we have hit an instance, and should thus use that as the key instead.
+        map_key = rayhit.hit.instID[0];
+    } else if (rayhit.hit.geomID != RTC_INVALID_GEOMETRY_ID) { // we have hit an original object, and should use that as the key.
+        map_key = rayhit.hit.geomID;
+    } else { // both instID and geomID are invalid, meaning nothing was hit at all.
+        // Sky background (gradient blue-white)
+        vec3 unit_direction = r.direction().unit_vector();
+        auto t = 0.5*(unit_direction.y() + 1.0);
 
-        // get the material of the thing we just hit
-        std::shared_ptr<Geometry> geomhit = scene->geom_map[rayhit.hit.geomID];
-        std::shared_ptr<material> mat_ptr = geomhit->materialById(rayhit.hit.geomID);
-        record = geomhit->getHitInfo(r, r.at(rayhit.ray.tfar), rayhit.ray.tfar, rayhit.hit.geomID);
-
-        color color_from_emission = mat_ptr->emitted(record.u, record.v, record.pos);
-        if (!mat_ptr->scatter(r, record, attenuation, scattered)) {
-            return color_from_emission;
-        } 
-
-        color color_from_scatter = attenuation * colorize_ray(scattered, scene, depth-1);
-
-        return color_from_emission + color_from_scatter;
+        return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0); // lerp formula (1.0-t)*start + t*endval
     }
 
-    // Sky background (gradient blue-white)
-    vec3 unit_direction = r.direction().unit_vector();
-    auto t = 0.5*(unit_direction.y() + 1.0);
+    ray scattered;
+    color attenuation;
+    // get the material of the thing we just hit
+    std::shared_ptr<Geometry> geomhit = scene->geom_map[map_key];
+    std::shared_ptr<material> mat_ptr = geomhit->materialById(map_key);
+    record = geomhit->getHitInfo(r, r.at(rayhit.ray.tfar), rayhit.ray.tfar, map_key);
 
-    return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0); // lerp formula (1.0-t)*start + t*endval
+    color color_from_emission = mat_ptr->emitted(record.u, record.v, record.pos);
+    if (!mat_ptr->scatter(r, record, attenuation, scattered)) {
+        return color_from_emission;
+    } 
+
+    color color_from_scatter = attenuation * colorize_ray(scattered, scene, depth-1);
+
+    return color_from_emission + color_from_scatter;
 }
 
 struct RenderData {
@@ -449,32 +452,32 @@ void output(RenderData& render_data, Camera& cam, std::shared_ptr<Scene> scene_p
     render_data.completed_lines = 0;
 
     // To render entire thing without multithreading, uncomment this line and comment out num_threads -> threads.clear()
-    //render_scanlines_sse(image_height,image_height-1,scene_ptr,render_data,cam);
+    render_scanlines(image_height,image_height-1,scene_ptr,render_data,cam);
 
-    // Threading approach? : Divide the scanlines into N blocks
-    const int num_threads = std::thread::hardware_concurrency() - 1;
+    // // Threading approach? : Divide the scanlines into N blocks
+    // const int num_threads = std::thread::hardware_concurrency() - 1;
 
-    // Image height is the number of scanlines, suppose image_height = 800
-    const int lines_per_thread = image_height / num_threads;
-    const int leftOver = image_height % num_threads;
-    // The first <num_threads> threads are dedicated <lines_per_thread> lines, and the last thread is dedicated to <leftOver>
+    // // Image height is the number of scanlines, suppose image_height = 800
+    // const int lines_per_thread = image_height / num_threads;
+    // const int leftOver = image_height % num_threads;
+    // // The first <num_threads> threads are dedicated <lines_per_thread> lines, and the last thread is dedicated to <leftOver>
 
-    std::vector<color> pixel_colors;
-    std::vector<std::thread> threads;
+    // std::vector<color> pixel_colors;
+    // std::vector<std::thread> threads;
 
-    render_data.completed_lines = 0;
+    // render_data.completed_lines = 0;
 
-    for (int i=0; i < num_threads; i++) {
-        // In the first thead, we want the first lines_per_thread lines to be rendered
-        threads.emplace_back(render_scanlines_sse,lines_per_thread,(image_height-1) - (i * lines_per_thread), scene_ptr, std::ref(render_data),cam);
-    }
-    threads.emplace_back(render_scanlines_sse,leftOver,(image_height-1) - (num_threads * lines_per_thread), scene_ptr, std::ref(render_data),cam);
+    // for (int i=0; i < num_threads; i++) {
+    //     // In the first thead, we want the first lines_per_thread lines to be rendered
+    //     threads.emplace_back(render_scanlines_sse,lines_per_thread,(image_height-1) - (i * lines_per_thread), scene_ptr, std::ref(render_data),cam);
+    // }
+    // threads.emplace_back(render_scanlines_sse,leftOver,(image_height-1) - (num_threads * lines_per_thread), scene_ptr, std::ref(render_data),cam);
 
-    for (auto &thread : threads) {
-            thread.join();
-    }
-    std::cerr << "Joining all threads" << std::endl;
-    threads.clear();
+    // for (auto &thread : threads) {
+    //         thread.join();
+    // }
+    // std::cerr << "Joining all threads" << std::endl;
+    // threads.clear();
 
     std::cout << "P3" << std::endl;
     std::cout << image_width << ' ' << image_height << std::endl;
@@ -767,16 +770,25 @@ void instances() {
     auto sphere1 = make_shared<SpherePrimitive>(point3(0,0,3), red, 1, device);
     scene_ptr->add_primitive(sphere1);
 
-    // Create instance and add
+    // OPTION A: Create another sphere
+    // auto sphere2 = make_shared<SpherePrimitive>(point3(0,0,-3), red, 1, device);
+    // scene_ptr->add_primitive(sphere2);
+
+    // OPTION B: Create an INSTANCE of the original sphere
     float transform[12] = {
         1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 1, -6
-    };
+    }; // results in the isntance being at (0,0,-3)
     scene_ptr->add_instance(sphere1, device, transform);
+
     scene_ptr->commitScene();
     rtcReleaseDevice(device);
     output(render_data, cam, scene_ptr);
+
+    // Fire test ray at the rightmost sphere
+    ray test_ray = ray(point3(10, 0, 0), (vec3(0, 0, -3) - vec3(10, 0, 0)).unit_vector(), 0.0);
+    std::cout << colorize_ray(test_ray, scene_ptr, 5) << std::endl;
 }
 
 int main() {
