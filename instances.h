@@ -1,3 +1,6 @@
+#ifndef INSTANCES_H
+#define INSTANCES_H
+
 #include "ray.h"
 #include "primitive.h"
 
@@ -41,3 +44,5 @@ class SpherePrimitiveInstance : public PrimitiveInstance {
     pptr = make_shared<SpherePrimitive>(sprim->position + translate, sprim->mat_ptr, 1, device);
   }
 };
+
+#endif
