@@ -23,6 +23,7 @@ struct Config {
     bool showVersion = false;
     bool showHelp = false;
     bool verbose = false;
+    std::string debugFile = "debug.txt";
 
     // Optimization flags
     bool multithreading = false;

@@ -44,7 +44,6 @@ void setup_benchmark_scene(std::shared_ptr<Scene> scene_ptr, RTCDevice device) {
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
     auto ground_sphere = make_shared<SpherePrimitive>(point3(0,-1000,0), ground_material, 1000, device);
     unsigned int groundID = scene_ptr->add_primitive(ground_sphere);
-    std::cerr << "ADD PRIM :: (0,-1000,0), RADIUS 1000, LAMBERTIAN" << std::endl;
 
     for (int a = -11; a < 11; a++) {
 
@@ -522,6 +521,13 @@ void output(RenderData& render_data, Camera& cam, std::shared_ptr<Scene> scene_p
     std::cerr << "\nCompleted render of scene. Render time: " << time_seconds << " seconds" << "\n";
 }
 
+void outputRenderInfo(std::ofstream& out, Config& config, RenderData& render_data, float time) {
+    out << "======== " << config.inputFile << " ========" << std::endl;
+    out << "Samples: " << render_data.samples_per_pixel << std::endl;
+    out << "Depth: " << render_data.max_depth << std::endl;
+    out << "Time: " << time << " seconds" << std::endl;
+}
+
 /**
  * @brief modified version of other output that takes in CLI arguments and modifies behaviour.
  * @note eventually should REPLACE the other one. The other one exists to keep other scenes intact.
@@ -615,6 +621,10 @@ void output(RenderData& render_data, Camera& cam, std::shared_ptr<Scene> scene_p
         auto current_time = std::chrono::high_resolution_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time).count();
         double time_seconds = elapsed_time / 1000.0;
+
+        std::ofstream debugFile(config.debugFile, std::ios::app);
+        if (!debugFile.is_open()) {throw std::runtime_error("Could not open file: " + config.debugFile);}
+        outputRenderInfo(debugFile, config, render_data, time_seconds);
 
         std::cerr << "\nCompleted render of scene. Render time: " << time_seconds << " seconds" << "\n";
     }
