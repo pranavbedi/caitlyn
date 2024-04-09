@@ -1,3 +1,6 @@
+#ifndef INTERSECTS_H
+#define INTERSECTS_H
+
 // Semi-temporary helper header file for the rtcIntersectX functions.
 // Helpers do not actually fire the ray, they just set up the RTCRayHit objects with rays.
 
@@ -76,3 +79,5 @@ void setupRayHit16(struct RTCRayHit16& rayhit, std::vector<ray>& rays) {
         ix += 1;
     }
 }
+
+#endif
