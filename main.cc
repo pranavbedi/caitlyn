@@ -264,9 +264,17 @@ void output(RenderData& render_data, Camera& cam, std::shared_ptr<Scene> scene_p
                 data[image_height - j - 1][i].B = pixel_color.z();
             }
         }
-        stbi_write_jpg("image.jpg", image_width, image_height, 3, data, 100);
+        if (config.outputPath == "image.ppm") {
+            stbi_write_jpg("image.jpg", image_width, image_height, 3, data, 100);
+        } else {
+            stbi_write_jpg(config.outputPath.c_str(), image_width, image_height, 3, data, 100);
+        }
     } else if (config.outputType == "png") {
-        write_png("image.png", image_width, image_height, samples_per_pixel, render_data.buffer);
+        if (config.outputPath == "image.ppm") {
+            write_png("image.png", image_width, image_height, samples_per_pixel, render_data.buffer);
+        } else {
+            write_png(config.outputPath.c_str(), image_width, image_height, samples_per_pixel, render_data.buffer);
+        }
     }
 
     if (config.verbose) {

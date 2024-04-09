@@ -56,6 +56,10 @@ void outputRenderInfo(std::ofstream& out, Config& config, RenderData& render_dat
     out << "Samples: " << render_data.samples_per_pixel << std::endl;
     out << "Depth: " << render_data.max_depth << std::endl;
     out << "Time: " << time << " seconds" << std::endl;
+    if (config.multithreading) { out << "Multithreading: YES" << std::endl; }
+    else { out << "Multithreading: NO" << std::endl; }
+    if (config.vectorization == 0) { out << "Vectorization: NONE" << std::endl; }
+    else{ out << "Vectorization: " << config.vectorization << std::endl; }
 }
 
 int checkValidIntegerInput(int& i, int argc, char* argv[], std::string flagName) {
