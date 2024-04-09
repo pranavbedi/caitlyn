@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include "render.h"
 
 /**
  * @brief structure to hold all relevant data determined by flags.
@@ -48,6 +49,13 @@ void outputHelpGuide(std::ostream& out) {
         << " -T,  --threads <amt>                  If multithreading is enabled, sets amount of threads used.\n"
         << " -Vx, --vectorization <batch_size>     Set SIMD vectorization batch size [0|4|8|16]. If NONE = 0, do not enable the flag.\n";
     exit(0);
+}
+
+void outputRenderInfo(std::ofstream& out, Config& config, RenderData& render_data, float time) {
+    out << "======== " << config.inputFile << " ========" << std::endl;
+    out << "Samples: " << render_data.samples_per_pixel << std::endl;
+    out << "Depth: " << render_data.max_depth << std::endl;
+    out << "Time: " << time << " seconds" << std::endl;
 }
 
 int checkValidIntegerInput(int& i, int argc, char* argv[], std::string flagName) {
