@@ -612,6 +612,58 @@ void two_perlin_spheres(){
     output(render_data, cam, scene_ptr);
 }
 
+
+void instances_test(){
+// Set RenderData
+    RenderData render_data; 
+    const auto aspect_ratio = 3.0 / 2.0;
+    setRenderData(render_data, aspect_ratio, 1200, 100, 50);
+    RTCDevice device = initializeDevice();
+
+
+    // Set up Camera
+    point3 lookfrom(13, 2, 3);
+    point3 lookat(0, 0, 0);
+    vec3 vup(0,1,0);
+    double vfov = 20;
+    double aperture = 0.0001;
+    double dist_to_focus = 10.0;
+
+    Camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+    auto scene_ptr = make_shared<Scene>(device, cam);
+
+    // Ground
+    auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5)); // Solid gray Lambertian material
+    auto ground = (make_shared<SpherePrimitive>(point3(0, -1000, 0), ground_material, 1000, device));
+    scene_ptr->add_primitive(ground);
+
+    // First Sphere with instance transformations
+    point3 center1(0, 0.2, 0);
+    auto material1 = make_shared<lambertian>(color(0.8, 0.4, 0.4)); // Reddish Lambertian material
+    auto sphere1 = make_shared<SpherePrimitive>(center1, material1, 0.2, device);
+    scene_ptr->add_primitive(sphere1);
+
+       // Create an INSTANCE of the original sphere
+    float transform[12] = {
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, -6
+    }; // results in the isntance being at (0,0,-3)
+    auto sphere_instance = make_shared<SpherePrimitiveInstance>(sphere1, transform, device);
+    scene_ptr->add_primitive_instance(sphere_instance, device);
+
+    // // Second Sphere with instance transformations
+    // point3 center2(0, 0.6, 0); // Placed above the first sphere
+    // auto material2 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0); // Metal material
+    // shared_ptr<hittable> sphere2 = make_shared<sphere>(center2, 0.4, material2, create_still_timeline(center2));
+    // sphere2 = make_shared<translate>(sphere2, vec3(-1, 0, 0)); // Translate by (-1, 0, 0)
+    // sphere2 = make_shared<rotate_y>(sphere2, -45); // Rotate around y-axis by -45 degrees
+    // world.add(sphere2);
+    
+
+    output(render_data, cam, scene_ptr);
+    
+}
 int main(int argc, char* argv[]) {
     Config config = parseArguments(argc, argv);
     switch (80) {
