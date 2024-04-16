@@ -655,10 +655,12 @@ void instances_test(){
     // // Second Sphere with instance transformations
     // point3 center2(0, 0.6, 0); // Placed above the first sphere
     // auto material2 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0); // Metal material
-    // shared_ptr<hittable> sphere2 = make_shared<sphere>(center2, 0.4, material2, create_still_timeline(center2));
+    // auto quad1 = make_shared<QuadPrimitive>(center2, 0.4, material2, create_still_timeline(center2));
     // sphere2 = make_shared<translate>(sphere2, vec3(-1, 0, 0)); // Translate by (-1, 0, 0)
     // sphere2 = make_shared<rotate_y>(sphere2, -45); // Rotate around y-axis by -45 degrees
-    // world.add(sphere2);
+    // // world.add(sphere2);
+    scene_ptr->commitScene();
+    rtcReleaseDevice(device);
     
 
     output(render_data, cam, scene_ptr);
@@ -666,7 +668,7 @@ void instances_test(){
 }
 int main(int argc, char* argv[]) {
     Config config = parseArguments(argc, argv);
-    switch (80) {
+    switch (521) {
         case 30:  random_spheres(); break;
         case 48:  two_spheres();    break;
         case 481:  earth();          break;
@@ -675,7 +677,8 @@ int main(int argc, char* argv[]) {
         case 51:  simple_light();   break;
         case 511:  cornell_box();    break;
         case 49: two_perlin_spheres(); break;
-        case 52: instances();
+        case 52: instances(); break;
+        case 521: instances_test(); break;
     }
 }
 
