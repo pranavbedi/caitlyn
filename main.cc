@@ -668,7 +668,7 @@ void instances_test(){
 }
 int main(int argc, char* argv[]) {
     Config config = parseArguments(argc, argv);
-    switch (521) {
+    switch (50) {
         case 30:  random_spheres(); break;
         case 48:  two_spheres();    break;
         case 481:  earth();          break;
