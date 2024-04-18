@@ -632,7 +632,6 @@ int main(int argc, char* argv[]) {
         case 511:  cornell_box();    break;
         case 49: two_perlin_spheres(); break;
         case 52: instances(); break;
-        case 521: instances_quads(); break;
     }
 }
 
