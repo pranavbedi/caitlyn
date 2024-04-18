@@ -114,31 +114,32 @@ void output(RenderData& render_data, Camera& cam, std::shared_ptr<Scene> scene_p
     render_data.completed_lines = 0;
 
     // To render entire thing without multithreading, uncomment this line and comment out num_threads -> threads.clear()
-    //render_scanlines_sse(image_height,image_height-1,scene_ptr,render_data,cam);
+    render_scanlines(image_height,image_height-1,scene_ptr,render_data,cam);
 
-    // Threading approach? : Divide the scanlines into N blocks
-    const int num_threads = std::thread::hardware_concurrency() - 1;
+    // // Threading approach? : Divide the scanlines into N blocks
+    // const int num_threads = std::thread::hardware_concurrency() - 1;
 
-    // Image height is the number of scanlines, suppose image_height = 800
-    const int lines_per_thread = image_height / num_threads;
-    const int leftOver = image_height % num_threads;
-    // The first <num_threads> threads are dedicated <lines_per_thread> lines, and the last thread is dedicated to <leftOver>
+    // // Image height is the number of scanlines, suppose image_height = 800
+    // const int lines_per_thread = image_height / num_threads;
+    // const int leftOver = image_height % num_threads;
+    // // The first <num_threads> threads are dedicated <lines_per_thread> lines, and the last thread is dedicated to <leftOver>
 
-    std::vector<color> pixel_colors;
-    std::vector<std::thread> threads;
+    // std::vector<color> pixel_colors;
+    // std::vector<std::thread> threads;
 
+    // render_data.completed_lines = 0;
 
-    for (int i=0; i < num_threads; i++) {
-        // In the first thead, we want the first lines_per_thread lines to be rendered
-        threads.emplace_back(render_scanlines_sse,lines_per_thread,(image_height-1) - (i * lines_per_thread), scene_ptr, std::ref(render_data),cam);
-    }
-    threads.emplace_back(render_scanlines_sse,leftOver,(image_height-1) - (num_threads * lines_per_thread), scene_ptr, std::ref(render_data),cam);
+    // for (int i=0; i < num_threads; i++) {
+    //     // In the first thead, we want the first lines_per_thread lines to be rendered
+    //     threads.emplace_back(render_scanlines_sse,lines_per_thread,(image_height-1) - (i * lines_per_thread), scene_ptr, std::ref(render_data),cam);
+    // }
+    // threads.emplace_back(render_scanlines_sse,leftOver,(image_height-1) - (num_threads * lines_per_thread), scene_ptr, std::ref(render_data),cam);
 
-    for (auto &thread : threads) {
-            thread.join();
-    }
-    std::cerr << "Joining all threads" << std::endl;
-    threads.clear();
+    // for (auto &thread : threads) {
+    //         thread.join();
+    // }
+    // std::cerr << "Joining all threads" << std::endl;
+    // threads.clear();
 
     int output_type = 2; // 0 for ppm, 1 for jpg, 2 for png
     // hardcoded, but will be updated for CLI in CA-83
@@ -538,6 +539,51 @@ void cornell_box() {
     output(render_data, cam, scene_ptr);
 }
 
+void instances() {
+    RenderData render_data; 
+    const auto aspect_ratio = 16.0 / 9.0;
+    setRenderData(render_data, aspect_ratio, 600, 200, 50);
+
+    // Set up Camera
+    point3 lookfrom(10, 0, 0);
+    point3 lookat(0, 0, 0);
+    vec3 vup(0,1,0);
+    double vfov = 60;
+    double aperture = 0.0001;
+    double dist_to_focus = 10.0;
+
+    Camera cam(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+
+    // Simple usage of creating a Scene
+    RTCDevice device = initializeDevice();
+    auto scene_ptr = make_shared<Scene>(device, cam);
+
+    // Create initial sphere
+    auto red     = make_shared<lambertian>(color(1.0, 0.2, 0.2)); // replace with noise once implemented
+    auto sphere1 = make_shared<SpherePrimitive>(point3(0,-1,3), red, 1, device);
+    scene_ptr->add_primitive(sphere1);
+
+    // Create initial quad
+    auto quad1 = make_shared<QuadPrimitive>(point3(0,1,3), vec3(0, 3, 0), vec3(3, 0, 0), red, device);
+    scene_ptr->add_primitive(quad1);
+
+    // Create an INSTANCE of the original sphere
+    float transform[12] = {
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, -6
+    }; // results in the isntance being at (0,0,-3)
+    auto sphere_instance = make_shared<SpherePrimitiveInstance>(sphere1, transform, device);
+    scene_ptr->add_primitive_instance(sphere_instance, device);
+
+    auto quad_instance = make_shared<QuadPrimitiveInstance>(quad1, transform, device);
+    scene_ptr->add_primitive_instance(quad_instance, device);
+
+    scene_ptr->commitScene();
+    rtcReleaseDevice(device);
+    output(render_data, cam, scene_ptr);
+}
+
 void two_perlin_spheres(){
     RenderData render_data; 
     const auto aspect_ratio = 16.0 / 9.0;
@@ -573,6 +619,7 @@ void two_perlin_spheres(){
     output(render_data, cam, scene_ptr);
 }
 
+
 int main(int argc, char* argv[]) {
     Config config = parseArguments(argc, argv);
     switch (80) {
@@ -584,6 +631,8 @@ int main(int argc, char* argv[]) {
         case 51:  simple_light();   break;
         case 511:  cornell_box();    break;
         case 49: two_perlin_spheres(); break;
+        case 52: instances(); break;
+        case 521: instances_quads(); break;
     }
 }
 
