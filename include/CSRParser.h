@@ -118,7 +118,7 @@ public:
                 std::string id, position, u, v, material;
                 getNextLine(file, id); getNextLine(file, position); getNextLine(file, u); getNextLine(file, v); getNextLine(file, material);
                 auto quad = make_shared<QuadPrimitive>(readXYZProperty(position), readXYZProperty(u), readXYZProperty(v), materials[readStringProperty(material)], device);
-                primitives[id] = quad;
+                primitives[readStringProperty(id)] = quad;
                 scene_ptr->add_primitive(quad);
             } else if (startsWith(line, "Instance")) {
                 auto idStart = line.find('[') + 1;
