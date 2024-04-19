@@ -14,6 +14,7 @@
 #include "texture.h"
 #include "sphere_primitive.h"
 #include "quad_primitive.h"
+#include "box_primitive.h"
 #include "scene.h"
 #include "instances.h"
 
