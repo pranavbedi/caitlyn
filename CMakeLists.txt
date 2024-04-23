@@ -27,6 +27,9 @@ TARGET_LINK_LIBRARIES(caitlyn embree)
 target_link_libraries(caitlyn ${PNG_LIBRARY})
 include_directories(caitlyn ${PNG_INCLUDE_DIR})
 
+# Option to disable the building of the csr-validator executable
+option(BUILD_CSR_VALIDATOR_EXECUTABLE "Build the CSR Validator executable" OFF)
+
 # Add Submodules
 add_subdirectory(csr-schema)
 target_link_libraries(caitlyn csr-schema-lib)
