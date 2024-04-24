@@ -14,8 +14,6 @@
  * @param[in]       vfov Field of view
  * @param[in]       aspect_ratio float of width/height
  * @param[in]       focus_dist Distance from lookfrom in direction towards lookat to focus on. e.g 10.0 means the distance of highest sharpness is 10 units in direction of pointing.
- * @param[in]       _time0 DEPRECATED, shutter open
- * @param[in]       _time1 DEPRECATED, shutter close
  * 
  * @note Shutter open and shutter close are defaulted to 0 and 1, and have no effect on anything.
  */
@@ -28,9 +26,7 @@ class Camera : Base {
             double vfov, 
             double aspect_ratio,
             double aperture,
-            double focus_dist,
-            double _time0 = 0,
-            double _time1 = 1) : Base(lookfrom) {
+            double focus_dist) : Base(lookfrom) {
             
             // Convert vertical field of view from degrees to radians
             auto theta = degrees_to_radians(vfov);
@@ -53,9 +49,6 @@ class Camera : Base {
 
             // Calculate the radius of the lens for depth of field effects
             lens_radius = aperture / 2;
-            // Set the motion blur time interval
-            time0 = _time0;
-            time1 = _time1;
         }
 
         ray get_ray(double s, double t) const {
@@ -64,8 +57,7 @@ class Camera : Base {
 
 
             return ray(position + offset, 
-                lower_left_corner + s*horizontal + t*vertical - position - offset,
-                random_double(time0,time1));
+                lower_left_corner + s*horizontal + t*vertical - position - offset, 0.0);
         }
 
     private:
@@ -74,7 +66,6 @@ class Camera : Base {
         vec3 vertical;
         vec3 u, v, w;
         double lens_radius;
-        double time0, time1; // shutter open -> shutter close
 };
 
 #endif
