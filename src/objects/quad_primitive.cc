@@ -40,6 +40,3 @@ HitInfo QuadPrimitive::getHitInfo(const ray& r, const vec3& p, const float t, un
 
     return record;
 }
-
-vec3 QuadPrimitive::getV() { return v; }
-vec3 QuadPrimitive::getU() { return u; }

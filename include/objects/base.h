@@ -18,7 +18,7 @@ class Base {
     vec3 position;
     bool active = true; // as of writing this, this property isn't actually used anywhere. There's no way to deactivate.
 
-    Base(vec3 position);
+    Base(vec3 position) : position{position} {}
 };
 
 

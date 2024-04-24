@@ -5,8 +5,6 @@
 #include "hitinfo.h"
 #include "texture.h"
 
-// NOTE: Is not split into .cc and .h due to the upcoming Casino Epic drastically changing this file. This file MUST be split in CA-89.
-
 class hit_record;
 
 class material {

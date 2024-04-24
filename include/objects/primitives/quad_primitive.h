@@ -24,8 +24,12 @@ class QuadPrimitive : public Primitive {
 
         HitInfo getHitInfo(const ray& r, const vec3& p, const float t, unsigned int geomID) const override;
 
-        vec3 getV();
-        vec3 getU();
+        vec3 getV(){
+            return v;
+        }
+        vec3 getU(){
+            return u;
+        }
 };
 
 #endif
