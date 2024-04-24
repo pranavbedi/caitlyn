@@ -5,6 +5,20 @@
 #include "general.h"
 #include "base.h"
 
+/**
+ * @class Camera
+ * 
+ * @param[in]       lookfrom Camera position
+ * @param[in]       lookat point towards coordinate
+ * @param[in]       vup the vector representing the normal to the camera plane. Can be specified to rotate the camera.
+ * @param[in]       vfov Field of view
+ * @param[in]       aspect_ratio float of width/height
+ * @param[in]       focus_dist Distance from lookfrom in direction towards lookat to focus on. e.g 10.0 means the distance of highest sharpness is 10 units in direction of pointing.
+ * @param[in]       _time0 DEPRECATED, shutter open
+ * @param[in]       _time1 DEPRECATED, shutter close
+ * 
+ * @note Shutter open and shutter close are defaulted to 0 and 1, and have no effect on anything.
+ */
 class Camera : Base {
     public:
         Camera(
@@ -18,20 +32,28 @@ class Camera : Base {
             double _time0 = 0,
             double _time1 = 1) : Base(lookfrom) {
             
+            // Convert vertical field of view from degrees to radians
             auto theta = degrees_to_radians(vfov);
+            // Calculate the height of the viewport
             auto h = tan(theta/2);
             auto viewport_height = 2.0 * h;
+            // Calculate the width of the viewport
             auto viewport_width = aspect_ratio * viewport_height;
             
-            w = (position - lookat).unit_vector();
-            u = (cross(vup, w)).unit_vector();
-            v = cross(w, u);
+            // Calculate the camera's orthonormal basis vectors for orientation
+            w = (position - lookat).unit_vector();  // Viewing direction vector (reverse)
+            u = (cross(vup, w)).unit_vector();      // Right-side vector of the camera
+            v = cross(w, u);                        // Actual "up" vector for the camera
 
-            horizontal = focus_dist * viewport_width * u;
-            vertical = focus_dist * viewport_height * v;
-            lower_left_corner = position - horizontal/2 - vertical/2 - focus_dist*w;
+            // Calculate the vectors representing the viewport dimensions
+            horizontal = focus_dist * viewport_width * u;  // Horizontal vector scaled by focus distance
+            vertical = focus_dist * viewport_height * v;   // Vertical vector scaled by focus distance
+            // Calculate the lower-left corner of the viewport
+            lower_left_corner = position - horizontal/2 - vertical/2 - focus_dist * w;
 
+            // Calculate the radius of the lens for depth of field effects
             lens_radius = aperture / 2;
+            // Set the motion blur time interval
             time0 = _time0;
             time1 = _time1;
         }
