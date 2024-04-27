@@ -66,7 +66,7 @@ bool dielectric::scatter(const ray& r_in, const HitInfo& rec, color& attenuation
     return true;
 }
 
-double dielectric::(double cosine, double ref_idx) {
+double dielectric::reflectance(double cosine, double ref_idx) {
     auto r0 = (1 - ref_idx) / (1 + ref_idx);
     r0 = r0 * r0;
 
