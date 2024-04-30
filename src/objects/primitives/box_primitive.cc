@@ -85,3 +85,7 @@ HitInfo BoxPrimitive::getHitInfo(const ray& r, const vec3& p, const float t, uns
     record.set_face_normal(r, normal);
     return record;
 }
+
+vec3 BoxPrimitive::getA() { return a; }
+vec3 BoxPrimitive::getB() { return b; }
+vec3 BoxPrimitive::getC() { return c; }

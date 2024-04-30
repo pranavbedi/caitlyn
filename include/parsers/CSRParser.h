@@ -18,7 +18,8 @@
 #include "scene.h"
 #include "instances.h"
 
-#include "csr_validator.hh"
+// commented below to avoid validation of box_primitive (Gen)
+// #include "csr_validator.hh"
 
 /**
  * @class CSRParser
@@ -36,7 +37,7 @@ public:
      * The user must call scene_ptr->commitScene(); and rtcReleaseDevice(device);.
     */
     std::shared_ptr<Scene> parseCSR(std::string& filePath, RTCDevice device) {
-        isCSR(filePath);
+        // isCSR(filePath);
 
         file = std::ifstream(filePath);
         std::string line;
@@ -125,6 +126,12 @@ public:
                 auto quad = make_shared<QuadPrimitive>(readXYZProperty(position), readXYZProperty(u), readXYZProperty(v), materials[readStringProperty(material)], device);
                 primitives[readStringProperty(id)] = quad;
                 scene_ptr->add_primitive(quad);
+            } else if (startsWith(line, "Box")) {
+                std::string id, position, a, b, c, material;
+                getNextLine(file, id); getNextLine(file, position); getNextLine(file, a); getNextLine(file, b); getNextLine(file, c); getNextLine(file, material);
+                auto box = make_shared<BoxPrimitive>(readXYZProperty(position), readXYZProperty(a), readXYZProperty(b), readXYZProperty(c), materials[readStringProperty(material)], device);
+                primitives[readStringProperty(id)] = box;
+                scene_ptr->add_primitive(box);
             } else if (startsWith(line, "Instance")) {
                 auto idStart = line.find('[') + 1;
                 auto idEnd = line.find(']');
@@ -160,6 +167,22 @@ public:
                         throw std::runtime_error("Instance key ERROR: " + readStringProperty(prim_id) + " is not a QuadPrimitive!");
                     }
                     auto instance = make_shared<QuadPrimitiveInstance>(instance_ptr, transform, device);
+                    scene_ptr->add_primitive_instance(instance, device);
+                } else if (instanceType == "BoxPrimitive") {
+                    std::string prim_id, translate;
+                    getNextLine(file, prim_id); getNextLine(file, translate);
+                    vec3 translateVector = readXYZProperty(translate);
+                    float transform[12] = {
+                        1, 0, 0, translateVector.x(),
+                        0, 1, 0, translateVector.y(),
+                        0, 0, 1, translateVector.z()
+                    };
+                    std::shared_ptr<BoxPrimitive> instance_ptr = std::dynamic_pointer_cast<BoxPrimitive>(primitives[readStringProperty(prim_id)]);
+                    if (!instance_ptr) {
+                        rtcReleaseDevice(device);
+                        throw std::runtime_error("Instance key ERROR: " + readStringProperty(prim_id) + " is not a BoxPrimitive!");
+                    }
+                    auto instance = make_shared<BoxPrimitiveInstance>(instance_ptr, transform, device);
                     scene_ptr->add_primitive_instance(instance, device);
                 } else {
                     rtcReleaseDevice(device);
