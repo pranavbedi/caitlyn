@@ -12,7 +12,6 @@ struct Quad { int v0, v1, v2, v3; };
 
 class Primitive : public Geometry {
     public:
-    RTCGeometry geom;
     shared_ptr<material> mat_ptr;
 
 
