@@ -18,15 +18,15 @@ void outputHelpGuide(std::ostream& out) {
     exit(0);
 }
 
-void outputRenderInfo(std::ofstream& out, Config& config, RenderData& render_data, float time) {
+void outputRenderInfo(std::ostream& out, Config& config, RenderData& render_data, float time) {
     out << "======== " << config.inputFile << " ========" << std::endl;
     out << "Samples: " << render_data.samples_per_pixel << std::endl;
     out << "Depth: " << render_data.max_depth << std::endl;
     out << "Time: " << time << " seconds" << std::endl;
-    if (config.multithreading) { out << "Multithreading: YES" << std::endl; }
-    else { out << "Multithreading: NO" << std::endl; }
-    if (config.vectorization == 0) { out << "Vectorization: NONE" << std::endl; }
-    else{ out << "Vectorization: " << config.vectorization << std::endl; }
+    if (config.multithreading) out << "Multithreading: YES" << std::endl;
+    else out << "Multithreading: NO" << std::endl;
+    if (config.vectorization == 0) out << "Vectorization: NONE" << std::endl;
+    else out << "Vectorization: " << config.vectorization << std::endl;
 }
 
 int checkValidIntegerInput(int& i, int argc, char* argv[], std::string flagName) {

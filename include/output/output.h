@@ -6,6 +6,7 @@
 #include <functional>
 #include <fstream>
 #include "png_output.h"
+#include "CLIParser.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"

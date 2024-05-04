@@ -329,5 +329,3 @@ void render_scanlines_avx(int lines, int start_line, std::shared_ptr<Scene> scen
         std::cerr << "[" <<int(percentage_completed) << "%] completed" << std::endl;
     }
 }
-
-#endif

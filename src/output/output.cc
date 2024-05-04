@@ -102,5 +102,3 @@ void output(RenderData& render_data, Camera& cam, std::shared_ptr<Scene> scene_p
         std::cerr << "\nCompleted render of scene. Render time: " << time_seconds << " seconds" << "\n";
     }
 }
-
-#endif

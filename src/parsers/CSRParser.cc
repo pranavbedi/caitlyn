@@ -147,7 +147,7 @@ bool CSRParser::getNextLine(std::ifstream& file, std::string& holder) {
     return true;
 }
 
-std::vector<std::string> CSRParser::split(const std::string &s, char delimiter = ' ') {
+std::vector<std::string> CSRParser::split(const std::string &s, char delimiter) {
     std::vector<std::string> tokens;
 
     if (s.empty()) {
