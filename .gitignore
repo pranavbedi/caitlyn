@@ -33,3 +33,6 @@
 # CMake Build Directory
 build/
 .vscode/settings.json
+
+# Allow devcontainer.json
+!devcontainer.json
