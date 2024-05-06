@@ -17,9 +17,7 @@
 #include "box_primitive.h"
 #include "scene.h"
 #include "instances.h"
-
-// commented below to avoid validation of box_primitive (Gen)
-// #include "csr_validator.hh"
+#include "csr_validator.hh"
 
 /**
  * @class CSRParser
@@ -37,7 +35,7 @@ public:
      * The user must call scene_ptr->commitScene(); and rtcReleaseDevice(device);.
     */
     std::shared_ptr<Scene> parseCSR(std::string& filePath, RTCDevice device) {
-        // isCSR(filePath);
+        isCSR(filePath);
 
         file = std::ifstream(filePath);
         std::string line;
