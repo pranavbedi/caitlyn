@@ -39,7 +39,7 @@ struct Config {
 
 void outputHelpGuide(std::ostream& out);
 
-void outputRenderInfo(std::ofstream& out, Config& config, RenderData& render_data, float time);
+void outputRenderInfo(std::ostream& out, Config& config, RenderData& render_data, float time);
 
 int checkValidIntegerInput(int& i, int argc, char* argv[], std::string flagName);
 
