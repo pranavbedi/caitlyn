@@ -1,3 +1,4 @@
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "output.h"
 
 void output(RenderData& render_data, Camera& cam, std::shared_ptr<Scene> scene_ptr, Config& config) {
