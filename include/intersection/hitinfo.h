@@ -13,7 +13,7 @@ struct HitInfo {
 
     /** @brief Given a face's outward normal and the initial ray, sets front_face to represent
     if collision hits it from the front or not. */
-    inline void set_face_normal(const ray& r, const vec3& outward_normal);
+    void set_face_normal(const ray& r, const vec3& outward_normal);
 };
 
 
