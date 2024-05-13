@@ -5,7 +5,6 @@
 #include "image.hh"
 #include "perlin.h"
 
-
 class texture {
   public:
     virtual ~texture() = default;
@@ -58,7 +57,7 @@ class image_texture : public texture {
     color value(double u, double v, const point3& p) const;
 
   private:
-    image image;
+    image image_data;
 };
 
 #endif
