@@ -35,6 +35,17 @@ class rtw_image {
         std::cerr << "ERROR: Could not load image file '" << image_filename << "'.\n";
     }
 
+    rtw_image(const char* image_filename, int bytes_per_pixel) : bytes_per_pixel{bytes_per_pixel} {
+        auto filename = std::string(image_filename);
+        auto imagedir = getenv("RTW_IMAGES");
+
+        // Hunt for the image file in some likely locations.
+        if (imagedir && load(std::string(imagedir) + "/" + image_filename)) return;
+        if (load(filename)) return;
+
+        std::cerr << "ERROR: Could not load image file '" << image_filename << "'.\n";
+    }
+
     ~rtw_image();
 
     bool load(const std::string filename) {
@@ -60,7 +71,7 @@ class rtw_image {
     }
 
   private:
-    const int bytes_per_pixel = 3;
+    int bytes_per_pixel = 3;
     unsigned char *data;
     int image_width, image_height;
     int bytes_per_scanline;
