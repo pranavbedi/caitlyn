@@ -26,7 +26,7 @@ QuadPrimitiveInstance::QuadPrimitiveInstance(std::shared_ptr<QuadPrimitive> spri
     pptr = make_shared<QuadPrimitive>(sprim->position + translate, u, v, sprim->mat_ptr, device);
 }
 
-BoxPrimitive::BoxPrimitive(std::shared_ptr<BoxPrimitive> sprim, float* transform, RTCDevice device) : PrimitiveInstance(transform) {
+BoxPrimitiveInstance::BoxPrimitiveInstance(std::shared_ptr<BoxPrimitive> sprim, float* transform, RTCDevice device) : PrimitiveInstance(transform) {
     instance_scene = rtcNewScene(device);
     unsigned int geomID = rtcAttachGeometry(instance_scene, sprim->geom);
     rtcReleaseGeometry(sprim->geom);
