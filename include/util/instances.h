@@ -5,6 +5,7 @@
 #include "primitive.h"
 #include "quad_primitive.h"
 #include "sphere_primitive.h"
+#include "box_primitive.h"
 
 class Instance {
   public:
@@ -32,6 +33,13 @@ class QuadPrimitiveInstance : public PrimitiveInstance {
   public:
 
   QuadPrimitiveInstance(std::shared_ptr<QuadPrimitive> sprim, float* transform, RTCDevice device);
+};
+
+class BoxPrimitiveInstance : public PrimitiveInstance {
+
+  public:
+
+  BoxPrimitiveInstance(std::shared_ptr<BoxPrimitive> sprim, float* transform, RTCDevice device);
 };
 
 #endif
