@@ -54,3 +54,27 @@ color image_texture::value(double u, double v, const point3& p) const {
     auto color_scale = 1.0 / 255.0;
     return color(color_scale*pixel[0], color_scale*pixel[1], color_scale*pixel[2]);
 }
+
+// Pixel Image Textures
+pixel_image_texture::pixel_image_texture(const char* filename) : image(filename, 4) {}
+
+color pixel_image_texture::value(double u, double v, const point3& p) const {
+    return color(0,1,1);
+}
+
+RGBA pixel_image_texture::value(double u, double v) const {
+    RGBA result;
+    if (image.height() <= 0) return result;
+    if(u < 0) u = 0;
+    else if(u > 1) u = 1;
+    if(v < 0) v = 0;
+    else if(v > 1) v = 1;
+    else v = 1 - v;
+    auto i = static_cast<int>(u * image.width());
+    auto j = static_cast<int>(v * image.height());
+    auto pixel = image.pixel_data(i,j);
+    auto color_scale = 1.0 / 255.0;
+    result.RGB = color(color_scale*pixel[0], color_scale*pixel[1], color_scale*pixel[2]);
+    result.A = color_scale*pixel[3];
+    return result;
+}
