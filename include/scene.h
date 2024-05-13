@@ -7,7 +7,7 @@
 #include "material.h"
 #include "sphere_primitive.h"
 #include "instances.h"
-#include "hitinfo.h"
+#include "hit_info.hh"
 
 // SCENE INTERFACE
 // The scene class object covers all relevant objects in a scene:
