@@ -127,4 +127,33 @@ class dielectric : public material {
         }
 };
 
+class pixel_lambertian : public material {
+
+    public:
+        pixel_lambertian(shared_ptr<pixel_image_texture> a) : albedo(a) {}
+
+        virtual bool scatter(const ray& r_in, const HitInfo& rec, color& attenuation, ray& scattered) const override {
+            float t = random_double();
+            RGBA val = albedo->value(rec.u, rec.v);
+            if (t > val.A) {
+                scattered = ray(rec.pos, r_in.direction(), 0.0);
+                attenuation = color(1.0, 1.0, 1.0);
+            } else {
+                auto scatter_direction = rec.normal + random_unit_vector();
+
+                if (scatter_direction.near_zero()) {
+                    scatter_direction = rec.normal;
+                }
+                scattered = ray(rec.pos, scatter_direction, r_in.time());
+                attenuation = val.RGB;
+            }
+            
+            
+            return true;
+        }
+
+    private:
+    shared_ptr<pixel_image_texture> albedo;
+};
+
 #endif
