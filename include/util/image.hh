@@ -1,5 +1,5 @@
-#ifndef RTW_STB_IMAGE_H
-#define RTW_STB_IMAGE_H
+#ifndef IMAGE_H
+#define IMAGE_H
 
 // Disable strict warnings for this header from the Microsoft Visual C++ compiler.
 #ifdef _MSC_VER
@@ -12,21 +12,21 @@
 #include <cstdlib>
 #include <iostream>
 
-class rtw_image {
+class image {
 
   public:
 
-    rtw_image();
+    image();
 
-    // Loads image data from the specified file. If the RTW_IMAGES environment variable is
+    // Loads image data from the specified file. If the IMAGES environment variable is
     // defined, looks only in that directory for the image file. If the image was not found,
     // searches for the specified image file first from the current directory, then in the
     // images/ subdirectory, then the _parent's_ images/ subdirectory, and then _that_
     // parent, on so on, for six levels up. If the image was not loaded successfully,
     // width() and height() will return 0.
-    rtw_image(const char* image_filename);
+    image(const char* image_filename);
 
-    ~rtw_image();
+    ~image();
 
     // Loads image data from the given file name. Returns true if the load succeeded.
     bool load(const std::string filename);
