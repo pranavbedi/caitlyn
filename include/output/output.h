@@ -6,7 +6,7 @@
 #include <functional>
 #include <fstream>
 #include "png_output.h"
-#include "CLIParser.h"
+#include "cli_parser.hh"
 
 #include "stb_image_write.h"
 
