@@ -52,6 +52,8 @@ Config parseArguments(int argc, char* argv[]) {
     
     Config config;
 
+    if (argc == 1) throw std::invalid_argument("No arguments provided. Use '--help' for more information.");
+
     for(int i = 1; i < argc; ++i) {
 
         std::string arg(argv[i]);
