@@ -1,4 +1,4 @@
-#include "CSRParser.h"
+#include "csr_parser.hh"
 
 std::shared_ptr<Scene> CSRParser::parseCSR(std::string& filePath, RTCDevice device)  {
 

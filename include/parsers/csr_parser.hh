@@ -17,6 +17,7 @@
 #include "scene.h"
 #include "instances.h"
 
+// From csr-schema lib
 #include "csr_validator.hh"
 
 /**
