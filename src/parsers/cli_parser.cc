@@ -1,4 +1,4 @@
-#include "CLIParser.h"
+#include "cli_parser.hh"
 
 void outputHelpGuide(std::ostream& out) {
     out << "Usage: ./caitlyn [options]\n"
