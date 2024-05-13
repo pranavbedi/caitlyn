@@ -74,7 +74,7 @@ class pixel_image_texture : public texture {
   RGBA value(double u, double v) const;
 
   private:
-    rtw_image image;
+    image img;
 };
 
 #endif

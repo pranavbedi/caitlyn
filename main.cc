@@ -22,7 +22,7 @@ void load_test() {
     RTCDevice device = initializeDevice();
     auto scene_ptr = make_shared<Scene>(device, cam);
     
-    auto pic = make_shared<pixel_image_texture>("XXX.png");
+    auto pic = make_shared<pixel_image_texture>("kylo.png");
     auto picmat = make_shared<pixel_lambertian>(pic);
     auto quad = make_shared<QuadPrimitive>(point3(0, -2.5, 2.5), vec3(0, 0, -5), vec3(0, 5, 0), picmat, device);
     scene_ptr->add_primitive(quad);

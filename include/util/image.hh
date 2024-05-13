@@ -17,6 +17,7 @@ class image {
   public:
 
     image();
+    image(const char* image_filename, int bytes_per_pixel);
 
     // Loads image data from the specified file. If the IMAGES environment variable is
     // defined, looks only in that directory for the image file. If the image was not found,
@@ -38,7 +39,7 @@ class image {
     const unsigned char* pixel_data(int x, int y) const;
 
   private:
-    const int bytes_per_pixel = 3;
+    int bytes_per_pixel = 3;
     unsigned char *data;
     int image_width, image_height;
     int bytes_per_scanline;
