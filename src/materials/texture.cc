@@ -41,8 +41,8 @@ color image_texture::value(double u, double v, const point3& p) const {
     if (image_data.height() <= 0) return color(0,1,1);
 
     // Clamp input texture coordinates to [0,1] x [1,0]
-    if(u < 0) u = 0;
-    else if(u > 1) u = 1;
+    if (u < 0) u = 0;
+    else if (u > 1) u = 1;
 
     if(v < 0) v = 0;
     else if(v > 1) v = 1;
@@ -56,16 +56,17 @@ color image_texture::value(double u, double v, const point3& p) const {
 }
 
 // Pixel Image Textures
-pixel_image_texture::pixel_image_texture(const char* filename) : img(filename, 4) {}
+PixelImageTexture::PixelImageTexture(const char* filename) : img(filename, 4) {}
 
-color pixel_image_texture::value(double u, double v, const point3& p) const {
+color PixelImageTexture::value(double u, double v, const point3& p) const {
+    throw std::runtime_error("Incorrect value func. called. Use 'image_texture' if you want to use value()");
     return color(0,1,1);
 }
 
-RGBA pixel_image_texture::value(double u, double v) const {
+RGBA PixelImageTexture::value(double u, double v) const {
     RGBA result;
     if (img.height() <= 0) return result;
-    if(u < 0) u = 0;
+    if (u < 0) u = 0;
     else if(u > 1) u = 1;
     if(v < 0) v = 0;
     else if(v > 1) v = 1;

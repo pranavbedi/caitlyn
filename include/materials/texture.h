@@ -65,9 +65,9 @@ struct RGBA {
   color RGB = color(0,1,1);
 };
 // Specifically takes in PNGs and also accounts for alpha channel.
-class pixel_image_texture : public texture {
+class PixelImageTexture : public texture {
   public:
-  pixel_image_texture(const char* filename);
+  PixelImageTexture(const char* filename);
 
   color value(double u, double v, const point3& p) const; // should never be used, its simply purely virtual above
 

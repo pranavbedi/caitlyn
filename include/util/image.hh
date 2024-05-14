@@ -17,7 +17,6 @@ class image {
   public:
 
     image();
-    image(const char* image_filename, int bytes_per_pixel);
 
     // Loads image data from the specified file. If the IMAGES environment variable is
     // defined, looks only in that directory for the image file. If the image was not found,
@@ -25,7 +24,7 @@ class image {
     // images/ subdirectory, then the _parent's_ images/ subdirectory, and then _that_
     // parent, on so on, for six levels up. If the image was not loaded successfully,
     // width() and height() will return 0.
-    image(const char* image_filename);
+    image(const char* image_filename, int bytes_per_pixel = 3);
 
     ~image();
 

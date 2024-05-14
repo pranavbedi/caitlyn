@@ -130,7 +130,7 @@ class dielectric : public material {
 class pixel_lambertian : public material {
 
     public:
-        pixel_lambertian(shared_ptr<pixel_image_texture> a) : albedo(a) {}
+        pixel_lambertian(shared_ptr<PixelImageTexture> a) : albedo(a) {}
 
         virtual bool scatter(const ray& r_in, const HitInfo& rec, color& attenuation, ray& scattered) const override {
             float t = random_double();
@@ -153,7 +153,7 @@ class pixel_lambertian : public material {
         }
 
     private:
-    shared_ptr<pixel_image_texture> albedo;
+    shared_ptr<PixelImageTexture> albedo;
 };
 
 #endif
