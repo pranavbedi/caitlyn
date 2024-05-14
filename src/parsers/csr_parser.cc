@@ -17,7 +17,7 @@ std::shared_ptr<Scene> CSRParser::parseCSR(std::string& filePath, RTCDevice devi
 
     // Read in version
     getNextLine(file, line);
-    if (trim(line) != "version 0.1.3") {
+    if (trim(line) != "version 0.1.5") {
         rtcReleaseDevice(device);
         throw std::runtime_error("Unsupported version or missing version marker");
     }
@@ -70,7 +70,7 @@ std::shared_ptr<Scene> CSRParser::parseCSR(std::string& filePath, RTCDevice devi
             } else if (textureType == "Image") {
                 std::string textureId, transparency, path;
                 getNextLine(file, textureId); getNextLine(file, transparency); getNextLine(file, path);
-                if readBooleanProperty(transparency) textures[readStringProperty(textureId)] = std::make_shared<PixelImageTexture>(readStringProperty(path).c_str());
+                if (readBooleanProperty(transparency)) textures[readStringProperty(textureId)] = std::make_shared<PixelImageTexture>(readStringProperty(path).c_str());
                 else textures[readStringProperty(textureId)] = std::make_shared<image_texture>(readStringProperty(path).c_str());
             } else if (textureType == "Noise") {
                 std::string textureId, scale;
