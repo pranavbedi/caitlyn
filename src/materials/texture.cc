@@ -59,7 +59,7 @@ color image_texture::value(double u, double v, const point3& p) const {
 PixelImageTexture::PixelImageTexture(const char* filename) : img(filename, 4) {}
 
 color PixelImageTexture::value(double u, double v, const point3& p) const {
-    throw std::runtime_error("Incorrect value func. called. Use 'image_texture' if you want to use value()");
+    throw std::runtime_error("Incorrect value func. called. Use { color4 value(double u, double v) } instead.");
     return color(0,1,1);
 }
 
