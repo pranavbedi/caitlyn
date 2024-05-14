@@ -63,19 +63,23 @@ color PixelImageTexture::value(double u, double v, const point3& p) const {
     return color(0,1,1);
 }
 
-RGBA PixelImageTexture::value(double u, double v) const {
-    RGBA result;
-    if (img.height() <= 0) return result;
-    if (u < 0) u = 0;
-    else if(u > 1) u = 1;
-    if(v < 0) v = 0;
-    else if(v > 1) v = 1;
-    else v = 1 - v;
+color4 PixelImageTexture::value(double u, double v) const {
+
+    if (img.height() <= 0) throw std::invalid_argument("Image height is less than 0");
+
+    u = clamp(u, 0.0, 1.0);
+
+    if (0 <= v && v <= 1) v = 1 - v;
+    else v = clamp(v, 0.0, 1.0);
+
     auto i = static_cast<int>(u * img.width());
     auto j = static_cast<int>(v * img.height());
+
     auto pixel = img.pixel_data(i,j);
     auto color_scale = 1.0 / 255.0;
-    result.RGB = color(color_scale*pixel[0], color_scale*pixel[1], color_scale*pixel[2]);
-    result.A = color_scale*pixel[3];
-    return result;
+
+    return color4 {
+        static_cast<float>(color_scale)*pixel[3],
+        color(color_scale*pixel[0], color_scale*pixel[1], color_scale*pixel[2]), 
+    };
 }
