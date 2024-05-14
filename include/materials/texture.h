@@ -60,7 +60,7 @@ class image_texture : public texture {
     image image_data;
 };
 
-struct RGBA {
+struct color4 {
   float A = 1.0;
   color RGB = color(0,1,1);
 };
@@ -71,7 +71,7 @@ class PixelImageTexture : public texture {
 
   color value(double u, double v, const point3& p) const; // should never be used, its simply purely virtual above
 
-  RGBA value(double u, double v) const;
+  color4 value(double u, double v) const;
 
   private:
     image img;

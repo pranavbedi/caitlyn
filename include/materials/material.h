@@ -134,7 +134,7 @@ class pixel_lambertian : public material {
 
         virtual bool scatter(const ray& r_in, const HitInfo& rec, color& attenuation, ray& scattered) const override {
             float t = random_double();
-            RGBA val = albedo->value(rec.u, rec.v);
+            color4 val = albedo->value(rec.u, rec.v);
             if (t > val.A) {
                 scattered = ray(rec.pos, r_in.direction(), 0.0);
                 attenuation = color(1.0, 1.0, 1.0);
