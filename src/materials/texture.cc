@@ -41,12 +41,11 @@ color image_texture::value(double u, double v, const point3& p) const {
     if (image_data.height() <= 0) return color(0,1,1);
 
     // Clamp input texture coordinates to [0,1] x [1,0]
-    if (u < 0) u = 0;
-    else if (u > 1) u = 1;
+    u = clamp(u, 0.0, 1.0);
 
-    if(v < 0) v = 0;
-    else if(v > 1) v = 1;
-    else v = 1 - v;
+    if (0 <= v && v <= 1) v = 1 - v;
+    else v = clamp(v, 0.0, 1.0);
+    
     auto i = static_cast<int>(u * image_data.width());
     auto j = static_cast<int>(v * image_data.height());
     auto pixel = image_data.pixel_data(i,j);
