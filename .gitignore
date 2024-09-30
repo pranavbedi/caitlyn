@@ -34,3 +34,7 @@ build/
 
 # Allow devcontainer.json
 !devcontainer.json
+
+#python
+*.py
+venv/
